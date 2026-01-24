@@ -229,7 +229,9 @@ ALTER TABLE blogs_latest ENABLE ROW LEVEL SECURITY;
 ALTER TABLE blogs_info ENABLE ROW LEVEL SECURITY;
 
 -- Create policies for all tables (allowing all operations for now)
-CREATE POLICY "Allow all operations" ON slider_section FOR ALL USING (true);
+-- Note: slider_section policies are handled in a separate migration for better security
+-- DROP POLICY IF EXISTS "Allow all operations" ON slider_section;
+-- CREATE POLICY "Allow all operations" ON slider_section FOR ALL USING (true);
 CREATE POLICY "Allow all operations" ON services_home FOR ALL USING (true);
 CREATE POLICY "Allow all operations" ON services_manpower FOR ALL USING (true);
 CREATE POLICY "Allow all operations" ON services_trucks FOR ALL USING (true);
