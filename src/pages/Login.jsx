@@ -25,40 +25,53 @@ const Login = () => {
   };
 
   return (
-    <div className="h-screen flex items-center justify-center bg-gray-100">
-      <form onSubmit={handleLogin} className="bg-white p-8 rounded shadow-md w-96">
-        <h2 className="text-xl font-semibold mb-6 text-center">Admin Login</h2>
-        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+    <div className="min-h-screen grid place-items-center bg-gradient-to-br from-slate-100 via-slate-50 to-blue-50 px-4">
+      <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 shadow-xl shadow-slate-200/60">
+        <div className="mb-7 text-center">
+          <p className="text-xs uppercase tracking-[0.2em] text-slate-500">INDUS ADMIN PANEL</p>
+          <h2 className="mt-2 text-2xl font-semibold text-slate-900">Welcome back</h2>
+          <p className="mt-1 text-sm text-slate-600">Sign in to manage website content</p>
+        </div>
 
-        <input
-          type="email"
-          placeholder="Email"
-          className="w-full mb-4 p-2 border rounded"
-          value={form.email}
-          onChange={(e) => setForm({ ...form, email: e.target.value })}
-          required
-        />
+        <form onSubmit={handleLogin} className="space-y-4">
+          {error && <p className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-600">{error}</p>}
 
-        <input
-          type="password"
-          placeholder="Password"
-          className="w-full mb-4 p-2 border rounded"
-          value={form.password}
-          onChange={(e) => setForm({ ...form, password: e.target.value })}
-          required
-        />
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-slate-700">Email</label>
+            <input
+              type="email"
+              placeholder="admin@gmail.com"
+              className="w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-2.5 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+              value={form.email}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
+              required
+            />
+          </div>
 
-        <button
-          type="submit"
-          className="w-full mt-2 bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
-        >
-          Login
-        </button>
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-slate-700">Password</label>
+            <input
+              type="password"
+              placeholder="Enter your password"
+              className="w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-2.5 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+              value={form.password}
+              onChange={(e) => setForm({ ...form, password: e.target.value })}
+              required
+            />
+          </div>
 
-        <p className="mt-4 text-sm text-gray-600 text-center">
-          <strong>Hint:</strong> Email: <code>admin@gmail.com</code> | Password: <code>ad@12345</code>
+          <button
+            type="submit"
+            className="w-full mt-2 rounded-lg bg-blue-600 text-white py-2.5 font-medium hover:bg-blue-700 transition shadow-sm"
+          >
+            Login
+          </button>
+        </form>
+
+        <p className="mt-5 text-xs text-slate-500 text-center">
+          Demo credentials: <code>admin@gmail.com</code> / <code>ad@12345</code>
         </p>
-      </form>
+      </div>
     </div>
   );
 };

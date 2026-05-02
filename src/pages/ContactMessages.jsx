@@ -1,22 +1,13 @@
 // admin/pages/ContactMessages.jsx
 import React from 'react';
-import CRUDTable from '../components/CRUDTable';
+import EnquiryBoard from '../components/EnquiryBoard';
 
 const ContactMessages = () => {
-  const fields = [
-    { name: 'full_name', label: 'Full Name', type: 'text' },
-    { name: 'email', label: 'Email', type: 'text' },
-    { name: 'phone', label: 'Phone', type: 'text' },
-    { name: 'message', label: 'Message', type: 'textarea' },
-    { name: 'created_at', label: 'Submitted At', type: 'datetime' },
-  ];
-
   return (
-    <CRUDTable
-      table="contact_messages"
-      fields={fields}
-      title="Contact Messages Form List"
-      readOnly 
+    <EnquiryBoard
+      title="All Enquiries by Vertical"
+      subtitle="View and filter enquiries by vertical so NFPA, Services, Careers, Blogs, and General enquiries are separated."
+      tables={['contact_messages', 'services_contact_form']}
     />
   );
 };

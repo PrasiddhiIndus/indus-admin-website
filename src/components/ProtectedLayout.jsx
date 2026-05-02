@@ -9,12 +9,14 @@ const ProtectedLayout = () => {
     const config = routeConfig[location.pathname] || {};
 
     return (
-        <div className="flex min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-slate-50">
             <Sidebar />
-            <div className="flex-1 flex flex-col">
+            <div className="ml-72 flex min-h-screen flex-col">
                 <Header title={config.title} subtitle={config.subtitle} />
-                <main className="flex-1 p-6">
-                    <Outlet />
+                <main className="flex-1 p-6 md:p-8">
+                    <div className="mx-auto w-full max-w-[1400px]">
+                        <Outlet />
+                    </div>
                 </main>
             </div>
         </div>

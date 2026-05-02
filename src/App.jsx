@@ -14,6 +14,7 @@ import ServicesRepair from './pages/ServicesRepair';
 import NFPACourses from './pages/NFPACourses';
 import NFPABatches from './pages/NFPABatches';
 import NFPANews from './pages/NFPANews';
+import NFPAEnquiries from './pages/NFPAEnquiries';
 import Careers from './pages/Careers';
 import BlogsWelcome from './pages/BlogsWelcome';
 import BlogsVentures from './pages/BlogsVentures';
@@ -22,6 +23,7 @@ import BlogsLatest from './pages/BlogsLatest';
 import BlogsInfo from './pages/BlogsInfo';
 import ServiceContact from './pages/ServiceContact';
 import ContactMessages from './pages/ContactMessages';
+import Notifications from './pages/Notifications';
 import Dashboard from './components/Dashboard';
 import ProtectedLayout from './components/ProtectedLayout';
 
@@ -38,6 +40,7 @@ export const routeConfig = {
   '/nfpa/courses': { title: 'NFPA Courses', subtitle: 'Manage NFPA course catalog' },
   '/nfpa/batches': { title: 'NFPA Batches', subtitle: 'Manage NFPA training batches' },
   '/nfpa/news': { title: 'NFPA News', subtitle: 'Manage NFPA news and updates' },
+  '/nfpa/enquiries': { title: 'NFPA Enquiries', subtitle: 'View all enquiries coming from NFPA pages' },
   '/careers': { title: 'Career Openings', subtitle: 'Manage job postings and opportunities' },
   '/blogs/welcome': { title: 'Welcome Images', subtitle: 'Manage welcome section images' },
   '/blogs/ventures': { title: 'Venture Blogs', subtitle: 'Manage venture-related blog posts' },
@@ -46,6 +49,7 @@ export const routeConfig = {
   '/blogs/info': { title: 'General Information', subtitle: 'Manage general information content' },
   '/service_contact': { title: 'Service Contact Form List', subtitle: 'Manage service inquiries' },
   '/contact_messages': { title: 'Contact Messages List', subtitle: 'Manage contact inquiries' },
+  '/notifications': { title: 'Notifications', subtitle: 'Track enquiry alert delivery and team notifications' },
 };
 
 function App() {
@@ -84,6 +88,7 @@ function App() {
           <Route path="/nfpa/courses" element={<NFPACourses />} />
           <Route path="/nfpa/batches" element={<NFPABatches />} />
           <Route path="/nfpa/news" element={<NFPANews />} />
+          <Route path="/nfpa/enquiries" element={<NFPAEnquiries />} />
           <Route path="/careers" element={<Careers />} />
           <Route path="/blogs/welcome" element={<BlogsWelcome />} />
           <Route path="/blogs/ventures" element={<BlogsVentures />} />
@@ -92,6 +97,7 @@ function App() {
           <Route path="/blogs/info" element={<BlogsInfo />} />
           <Route path="/service_contact" element={<ServiceContact />} />
           <Route path="/contact_messages" element={<ContactMessages />} />
+          <Route path="/notifications" element={<Notifications />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" />} />

@@ -17,6 +17,32 @@ Improves the `slider_section` table with:
 ### 3. `20250101000001_storage_policies.sql`
 Documentation for storage bucket policies (must be set up manually in Supabase Dashboard).
 
+### 4. `20260420145500_enquiry_routing_and_notifications.sql`
+Adds enquiry routing + notification baseline:
+- New enquiry metadata columns on `services_contact_form` and `contact_messages`:
+  - `vertical`
+  - `sub_vertical`
+  - `assigned_team`
+  - `team_email`
+  - `status` (`new`, `notified`, `in_progress`, `closed`)
+- Auto-routing triggers that infer team ownership for new enquiries
+- `notification_logs` table for notification audit trails
+- `notification_queue` table for downstream email/Slack worker processing
+
+## Edge Functions
+
+### `notify-enquiry-teams`
+Location: `supabase/functions/notify-enquiry-teams`
+
+Purpose:
+- Processes pending rows in `notification_queue`
+- Sends team alerts via Slack webhook and/or Resend email
+- Marks queue entries as processed
+- Updates `notification_logs` with delivery status
+
+See function-specific setup in:
+- `supabase/functions/notify-enquiry-teams/README.md`
+
 ## Running Migrations
 
 ### Option 1: Supabase CLI (Recommended)
@@ -72,6 +98,8 @@ See `STORAGE_SETUP.md` for detailed instructions on setting up the `uploads` sto
 3. **Migrations Order**: Run migrations in chronological order (by filename timestamp).
 
 4. **Backup**: Always backup your database before running migrations in production.
+
+5. **Notification Delivery**: This project now queues notification jobs in `notification_queue`. To send real emails/Slack alerts, run a worker (Supabase Edge Function, cron job, or backend service) that reads unprocessed queue entries and marks them processed.
 
 ## Troubleshooting
 

@@ -1,22 +1,13 @@
 import React from 'react';
-import CRUDTable from '../components/CRUDTable';
+import EnquiryBoard from '../components/EnquiryBoard';
 
 const ServiceContact = () => {
-  const fields = [
-    { name: 'full_name', label: 'Full Name', type: 'text' },
-    { name: 'email', label: 'Email', type: 'text' },
-    { name: 'phone', label: 'Phone', type: 'text' },
-    { name: 'company', label: 'Company', type: 'text' },
-    { name: 'message', label: 'Message', type: 'textarea' },
-    { name: 'created_at', label: 'Submitted At', type: 'datetime' },
-  ];
-
   return (
-    <CRUDTable
-      table="services_contact_form"
-      fields={fields}
-      title="Service Contact Form Submissions"
-      readOnly 
+    <EnquiryBoard
+      title="Service Enquiries"
+      subtitle="Service enquiries are automatically grouped by vertical such as Manpower, Trucks, Projects, Products, Training, and Repair."
+      tables={['services_contact_form']}
+      limitToVertical="Services"
     />
   );
 };

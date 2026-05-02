@@ -2,17 +2,44 @@ import { supabase } from './supabaseClient';
 import toast from 'react-hot-toast';
 
 // Generic CRUD operations
-export const fetchData = async (table) => {
+export const fetchData = async (table, options = {}) => {
+  const { silent = false } = options;
+
   try {
     const { data, error } = await supabase
       .from(table)
       .select('*')
       .order('created_at', { ascending: false });
-    
-    if (error) throw error;
+
+    if (error) {
+      const missingCreatedAt =
+        typeof error.message === 'string' &&
+        error.message.toLowerCase().includes('created_at');
+
+      if (missingCreatedAt) {
+        const { data: fallbackData, error: fallbackError } = await supabase
+          .from(table)
+          .select('*');
+
+        if (fallbackError) throw fallbackError;
+        return fallbackData;
+      }
+
+      throw error;
+    }
+
     return data;
   } catch (error) {
-    toast.error(`Error fetching ${table}: ${error.message}`);
+    const missingTable = error?.code === 'PGRST205';
+
+    if (!silent || !missingTable) {
+      console.error(`Error fetching ${table}:`, error);
+    }
+
+    if (!silent && !missingTable) {
+      toast.error(`Error fetching ${table}: ${error.message}`);
+    }
+
     return [];
   }
 };

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Edit, Trash2, Plus, Upload, Eye } from 'lucide-react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Edit, Trash2, Plus, Upload, Eye, Search, Rows3, Image as ImageIcon, Video, CalendarClock } from 'lucide-react';
 import { fetchData, createRecord, updateRecord, deleteRecord } from '../utils/apiHelpers';
 import { uploadFile, supabase } from '../utils/supabaseClient';
 import Modal from './Modal';
@@ -14,6 +14,7 @@ const CRUDTable = ({ table, fields, title, readOnly = false }) => {
   const [uploading, setUploading] = useState(false);
   const [viewingItem, setViewingItem] = useState(null);
   const [fileInputs, setFileInputs] = useState({});
+  const [searchQuery, setSearchQuery] = useState('');
 
 
   useEffect(() => {
@@ -508,6 +509,24 @@ const CRUDTable = ({ table, fields, title, readOnly = false }) => {
     );
   };
 
+  const filteredData = useMemo(() => {
+    if (!searchQuery.trim()) return data;
+
+    const normalizedQuery = searchQuery.toLowerCase();
+    return data.filter((item) =>
+      fields.some((field) => {
+        const value = item[field.name];
+        if (value === null || value === undefined) return false;
+        return String(value).toLowerCase().includes(normalizedQuery);
+      })
+    );
+  }, [data, fields, searchQuery]);
+
+  const mediaFieldCount = useMemo(
+    () => fields.filter((field) => field.type === 'image' || field.type === 'video' || field.type === 'file').length,
+    [fields]
+  );
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -517,45 +536,100 @@ const CRUDTable = ({ table, fields, title, readOnly = false }) => {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-sm">
-      <div className="px-6 py-4 border-b border-gray-200">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
+    <div className="space-y-5">
+      <section className="rounded-2xl border border-slate-200 bg-gradient-to-r from-slate-900 via-slate-800 to-blue-900 px-6 py-6 text-white shadow-xl shadow-slate-300/40">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <p className="text-xs uppercase tracking-[0.16em] text-slate-300">Content Management</p>
+            <h2 className="mt-1 text-2xl font-semibold tracking-tight">{title}</h2>
+            <p className="mt-2 text-sm text-slate-200">Manage, review, and update records with structured controls.</p>
+          </div>
+
           {!readOnly && (
             <button
               onClick={handleCreate}
-              className="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors duration-200"
+              className="inline-flex items-center rounded-lg bg-white px-4 py-2.5 text-sm font-semibold text-slate-800 shadow-md transition hover:bg-slate-100"
             >
               <Plus className="w-4 h-4 mr-2" />
-              Add New
+              Add New Record
             </button>
           )}
-
         </div>
-      </div>
+      </section>
+
+      <section className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div className="panel p-4">
+          <p className="text-xs uppercase tracking-wide text-slate-500">Total Records</p>
+          <div className="mt-2 flex items-center gap-3">
+            <div className="rounded-lg bg-blue-50 p-2">
+              <Rows3 className="h-5 w-5 text-blue-600" />
+            </div>
+            <p className="text-2xl font-semibold text-slate-900">{data.length}</p>
+          </div>
+        </div>
+        <div className="panel p-4">
+          <p className="text-xs uppercase tracking-wide text-slate-500">Media Fields</p>
+          <div className="mt-2 flex items-center gap-3">
+            <div className="rounded-lg bg-purple-50 p-2">
+              {fields.some((field) => field.type === 'video') ? (
+                <Video className="h-5 w-5 text-purple-600" />
+              ) : (
+                <ImageIcon className="h-5 w-5 text-purple-600" />
+              )}
+            </div>
+            <p className="text-2xl font-semibold text-slate-900">{mediaFieldCount}</p>
+          </div>
+        </div>
+        <div className="panel p-4">
+          <p className="text-xs uppercase tracking-wide text-slate-500">Current View</p>
+          <div className="mt-2 flex items-center gap-3">
+            <div className="rounded-lg bg-emerald-50 p-2">
+              <CalendarClock className="h-5 w-5 text-emerald-600" />
+            </div>
+            <p className="text-sm font-medium text-slate-800">{readOnly ? 'Read Only' : 'Editable'}</p>
+          </div>
+        </div>
+      </section>
+
+      <div className="panel overflow-hidden">
+        <div className="panel-header">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <h3 className="text-lg font-semibold text-slate-900">Records</h3>
+            <div className="relative w-full sm:w-80">
+              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search in this table..."
+                className="w-full rounded-lg border border-slate-300 bg-white py-2 pl-9 pr-3 text-sm text-slate-700 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+              />
+            </div>
+          </div>
+        </div>
 
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+        <table className="min-w-full divide-y divide-slate-200">
+          <thead className="bg-slate-50/90">
             <tr>
               {fields.map((field) => (
                 <th
                   key={field.name}
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  className="px-6 py-3.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider"
                 >
                   {field.label}
                 </th>
               ))}
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3.5 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">
                 Actions
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {data.map((item) => (
-              <tr key={item.id} className="hover:bg-gray-50">
+          <tbody className="bg-white divide-y divide-slate-100">
+            {filteredData.map((item) => (
+              <tr key={item.id} className="hover:bg-slate-50/80 transition-colors">
                 {fields.map((field) => (
-                  <td key={field.name} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  <td key={field.name} className="px-6 py-4 whitespace-nowrap text-sm text-slate-800">
                     {renderField(field, item[field.name])}
                   </td>
                 ))}
@@ -564,7 +638,7 @@ const CRUDTable = ({ table, fields, title, readOnly = false }) => {
                   <div className="flex items-center justify-end space-x-2">
                     <button
                       onClick={() => setViewingItem(item)}
-                      className="text-green-600 hover:text-green-700 p-1 rounded transition-colors"
+                      className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 p-1.5 rounded-md transition-colors"
                       title="View Details"
                     >
                       <Eye className="w-4 h-4" />
@@ -573,7 +647,7 @@ const CRUDTable = ({ table, fields, title, readOnly = false }) => {
                     {!readOnly && (
                       <button
                         onClick={() => handleEdit(item)}
-                        className="text-blue-600 hover:text-blue-700 p-1 rounded transition-colors"
+                        className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 p-1.5 rounded-md transition-colors"
                         title="Edit"
                       >
                         <Edit className="w-4 h-4" />
@@ -583,7 +657,7 @@ const CRUDTable = ({ table, fields, title, readOnly = false }) => {
                     {!readOnly && (
                       <button
                         onClick={() => handleDelete(item)}
-                        className="text-red-600 hover:text-red-700 p-1 rounded transition-colors"
+                        className="text-red-600 hover:text-red-700 hover:bg-red-50 p-1.5 rounded-md transition-colors"
                         title="Delete"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -596,11 +670,14 @@ const CRUDTable = ({ table, fields, title, readOnly = false }) => {
           </tbody>
         </table>
 
-        {data.length === 0 && (
+        {filteredData.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-gray-500">No data found. Click "Add New" to create your first entry.</p>
+            <p className="text-slate-500">
+              {searchQuery ? 'No records match your search.' : 'No data found. Click "Add New Record" to create your first entry.'}
+            </p>
           </div>
         )}
+      </div>
       </div>
       {!readOnly && (
         <Modal
